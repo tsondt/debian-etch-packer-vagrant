@@ -1,0 +1,38 @@
+{
+    "builders": [{
+        "type": "virtualbox-iso",
+        "guest_os_type": "Debian",
+        "vboxmanage": [
+            ["modifyvm", "{{.Name}}", "--memory", "512"],
+			["modifyvm", "{{.Name}}", "--cpus", "1"],
+			["modifyvm", "{{.Name}}", "--audio", "none"]
+        ],
+		"disk_size" : 4096,
+		"hard_drive_interface": "sata",
+        "iso_url": "debian-40r9-i386-netinst.iso",
+        "iso_checksum": "f451c3adf52feb2618cd458fdd758bf29330788f3eb721aaf9f5cba8c20b1d61",
+        "iso_checksum_type": "sha256",
+        "http_directory" : "http",
+        "ssh_username": "root",
+        "ssh_password": "t00r",
+        "ssh_wait_timeout": "10m",
+        "shutdown_command": "shutdown -P -h now",
+		"boot_wait": "5s",
+        "boot_command" : [
+			"auto ",
+            "url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+			"locale=en_US ",
+			"keymap=us <enter>"
+        ]
+    }],
+	"provisioners": [{
+		"type": "shell",
+		"inline": ["sed -i -r '/^$|^#|deb cdrom/d' /etc/apt/sources.list"]
+	}],
+	"post-processors": [{
+		"type": "vagrant",
+		"compression_level": "9",
+		"output": "debian4_{{ .Provider }}.box",
+		"only": ["virtualbox-iso"]
+    }]
+}
