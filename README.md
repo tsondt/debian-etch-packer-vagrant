@@ -17,7 +17,15 @@ git clone https://github.com/tsondt/debian-etch-packer-vagrant
 packer build debian4.json
 vagrant box add --name debian4 debian4_virtualbox.box
 vagrant up
+ssh -p 2222 root@127.0.0.1
 ```
 
 Default SSH username/password is `root`/`t00r`.
 
+Clean up:
+
+```
+vagrant destroy
+vagrant box remove debian4
+rm -f debian4_virtualbox.box
+```
